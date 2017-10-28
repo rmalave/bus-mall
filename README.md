@@ -2,8 +2,6 @@
 
 ## User stories
 
-### Market Research Team
-
 #### As a market research team:
 
  - I want an app to run a study with images to determine the most popular
