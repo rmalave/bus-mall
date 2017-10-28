@@ -1,10 +1,10 @@
 #Bus Mall Lab for Code Fellows 201
 
-##**User stories**
+##User stories
 
-###**Market Research Team**
+###Market Research Team
 
-####**As a market research team:**
+####As a market research team:
 
  - I want an app to run a study with images to determine the most popular
    products for our  Bus Mall catalog.
@@ -16,7 +16,7 @@
  - I want to see a result of the analysis presented to me so
    that I can identify the prodcuts to put on the catalog.
 
-####**As a member of the Focus Group:**
+####As a member of the Focus Group:
 
 - 3 images should be presented to me side by side.
 - I should be able to select an image from the 3 images presented to me.
@@ -24,7 +24,7 @@
 - I should see a total of 25 sets of 3 images each.
 - I should be presented with a result of the most selectd products after the study has been completed.
 
-####**As a developer:**
+####As a developer:
 
 - I should present the user with a set of 3 images to choose from.
 - Every image presented should be randomly selected form teh data set without duplicates in the set.
