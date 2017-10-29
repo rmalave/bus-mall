@@ -6,7 +6,7 @@
 
  - I want an app to run a study with images to determine the most popular
    products for our  Bus Mall catalog.
-   
+
  - I want to present the users with a selected group of 3 images side by
    side.    
  - I want the user to select a product from the selected
@@ -33,6 +33,7 @@
 - Calculate the percentage of times an image was selected.
 - Display a data table with the results of the study.
 
+Collaborated with Ronnie Lewis
 
 
 
