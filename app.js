@@ -3,6 +3,7 @@
 //Create array to store product objects
 var allProducts = [];
 var usedImages = [];
+var selections = 0;
 
 //Create a constructor for the products
 
@@ -11,6 +12,7 @@ function Product(name, filepath) {
   this.filepath = filepath;
   this.numClicked = 0;
   this.numShown = 0;
+  this.id = this.name.replace(' ', '').toLowerCase();
 
   allProducts.push(this);
 }
@@ -41,20 +43,24 @@ new Product('Wine Glass', 'img/wine-glass.jpg');
 
 function inArray(num, array) {
   for(var i = 0; i <= array.length; i++) {
-    return num === array[i];
+    if(num === array[i]) {
+      return true;
+    }
   }
+  return false;
 }
 
-
+// Render 3 images to the user
 function getRandImage(array) {
-
+  var num = 0;
   for(var i = 0; i < 3; i++) {
-    var num = Math.floor(Math.random() * (array.length));
-
-    while(inArray(num, usedNums)) {
-      num = Math.floor(Math.random() * (array.length));
+    if(usedImages.length >= array.length) {
+      usedImages = [];
     }
-    usedNums.push(num);
+    do {
+      num = Math.floor(Math.random() * (array.length));
+    } while(inArray(num, usedImages));
+    usedImages.push(num);
 
     var pageWrapper = document.getElementById('wrapper');
     var productWrapper = document.createElement('div');
@@ -68,6 +74,9 @@ function getRandImage(array) {
     productNameContainer.className = 'container';
     productImage.src = array[num].filepath;
     productImage.name = array[num].name;
+    productImage.className = 'image';
+    productImage.id = array[num].id;
+    array[num].numShown++;
 
     productWrapper.appendChild(productImage);
     productNameContainer.appendChild(productName);
@@ -75,5 +84,53 @@ function getRandImage(array) {
     pageWrapper.appendChild(productWrapper);
   }
 }
-
 getRandImage(allProducts);
+
+//Display results to the page as a list
+function displayResults() {
+  var pageWrapper = document.createElement('div');
+  var ulEl = document.createElement('ul');
+  var h2El = document.createElement('h2');
+
+  h2El.textContent = 'You\'re done! Here are the results!';
+  document.body.appendChild(pageWrapper);
+  pageWrapper.id = 'wrapper';
+
+  for(var i = 0; i < allProducts.length; i++) {
+    var liEl = document.createElement('li');
+    var message = allProducts[i].numClicked + ' votes for the ' + allProducts[i].name + '.';
+    liEl.textContent = message;
+    ulEl.appendChild(liEl);
+  }
+  pageWrapper.appendChild(h2El);
+  pageWrapper.appendChild(ulEl);
+}
+
+//create click handler for images
+function handleImageClick(event) {
+  if(event.target !== event.currentTarget) {
+    var clickedProduct = event.target.id;
+    console.log(clickedProduct);
+  }
+  event.stopPropagation();
+
+  for(var i = 0; i < allProducts.length; i++) {
+    if(allProducts[i].id === clickedProduct) {
+      allProducts[i].numClicked++;
+    }
+  }
+  var element = document.getElementById('wrapper');
+  while (element.firstChild) {
+    element.removeChild(element.firstChild);
+  }
+  getRandImage(allProducts);
+  selections++;
+  if(selections === 25) {
+    wrapper.removeEventListener('click', handleImageClick);
+    wrapper.remove();
+    displayResults();
+  }
+}
+
+var wrapper = document.getElementById('wrapper');
+wrapper.addEventListener('click', handleImageClick);
