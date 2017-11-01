@@ -1,19 +1,16 @@
 'use strict';
-
 //Create array to store product objects
 var allProducts = [];
 var usedImages = [];
 var selections = 0;
-
+var pics = [];
 //Create a constructor for the products
-
 function Product(name, filepath) {
   this.name = name;
   this.filepath = filepath;
   this.numClicked = 0;
   this.numShown = 0;
   this.id = this.name.replace(' ', '').toLowerCase();
-
   allProducts.push(this);
 }
 
@@ -40,7 +37,6 @@ new Product('Water Can', 'img/water-can.jpg');
 new Product('Wine Glass', 'img/wine-glass.jpg');
 
 //Display 3 randomly slelected products to the page
-
 function inArray(num, array) {
   for(var i = 0; i <= array.length; i++) {
     if(num === array[i]) {
@@ -50,19 +46,34 @@ function inArray(num, array) {
   return false;
 }
 
-// Render 3 images to the user
-function getRandImage(array) {
-  var num = 0;
-  for(var i = 0; i < 3; i++) {
-    if(usedImages.length >= array.length) {
-      usedImages = [];
-    }
-    do {
-      num = Math.floor(Math.random() * (array.length));
-    } while(inArray(num, usedImages));
-    usedImages.push(num);
+function getRandom() {
+  return Math.floor(Math.random() * allProducts.length);
+}
 
-    var pageWrapper = document.getElementById('wrapper');
+// Render 3 images to the user
+function displayImages(array) {
+  var currentlyShowing = [];
+  currentlyShowing[0] = getRandom();
+
+  while (usedImages.indexOf(currentlyShowing[0]) !== -1) {
+    console.error('Duplicate, or in prior view! Re run!');
+    currentlyShowing[0] = getRandom();
+  }
+  //make center image unique
+  currentlyShowing[1] = getRandom();
+  while(currentlyShowing[0] === currentlyShowing[1] || usedImages.indexOf(currentlyShowing[1]) !== -1) {
+    console.error('Duplicate at center, or in prior view! Re run!');
+    currentlyShowing[1] = getRandom();
+  }
+  //make right image unique
+  currentlyShowing[2] = getRandom();
+  while(currentlyShowing[0] === currentlyShowing[2] || currentlyShowing[1] === currentlyShowing[2] || usedImages.indexOf(currentlyShowing[2]) !== -1) {
+    console.error('Duplicate at 3rd one! Re run it!');
+    currentlyShowing[2] = getRandom();
+  }
+
+  var pageWrapper = document.getElementById('wrapper');
+  for(var i = 0; i < 3; i++) {
     var productWrapper = document.createElement('div');
     var productNameContainer = document.createElement('div');
     var productImage = document.createElement('img');
@@ -70,13 +81,13 @@ function getRandImage(array) {
 
     productWrapper.className = 'card';
     productName.className = 'product-name';
-    productName.textContent = array[num].name;
+    productName.textContent = allProducts[currentlyShowing[i]].name;
     productNameContainer.className = 'container';
-    productImage.src = array[num].filepath;
-    productImage.name = array[num].name;
+    productImage.src = allProducts[currentlyShowing[i]].filepath;
+    productImage.name = allProducts[currentlyShowing[i]].name;
     productImage.className = 'image';
-    productImage.id = array[num].id;
-    array[num].numShown++;
+    productImage.id = allProducts[currentlyShowing[i]].id;
+    allProducts[currentlyShowing[i]].numShown++;
 
     productWrapper.appendChild(productImage);
     productNameContainer.appendChild(productName);
@@ -84,8 +95,7 @@ function getRandImage(array) {
     pageWrapper.appendChild(productWrapper);
   }
 }
-getRandImage(allProducts);
-
+displayImages(allProducts);
 //Display results to the page as a list
 function displayResults() {
   var pageWrapper = document.createElement('div');
@@ -123,7 +133,7 @@ function handleImageClick(event) {
   while (element.firstChild) {
     element.removeChild(element.firstChild);
   }
-  getRandImage(allProducts);
+  displayImages(allProducts);
   selections++;
   if(selections === 25) {
     wrapper.removeEventListener('click', handleImageClick);
