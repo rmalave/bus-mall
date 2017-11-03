@@ -17,12 +17,14 @@
   margin: 0 auto;
 }
 .card {
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    transition: 0.3s;
-    width: 31%;
-    float: left;
-    margin: 10px;
-    cursor: pointer;
+  cursor: pointer;
+}
+
+.card-wrapper {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  width: 31%;
+  float: left;
 }
 
 .card img {
@@ -44,6 +46,17 @@
 
 /* chart style */
 .canvas-wrapper {
-  max-width: 80%;
+  max-width: 90%;
   margin: 15px auto;
+}
+
+canvas {
+  float: left;
+  max-width: 40%;
+}
+
+@media screen and(max-width: 900px) {
+  canvas {
+    float: none !important;
+  }
 }

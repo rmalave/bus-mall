@@ -1,11 +1,12 @@
 'use strict';
 //Create array to store product objects
 var allProducts = [];
-var usedImages = [];
+var usedImages = [getRandom(), getRandom(), getRandom()];
 var selections = 0;
 var pics = [];
 var clickData = [];
-var productNames = []
+var clickPercentage = [];
+var productNames = [];
 //Create a constructor for the products
 function Product(name, filepath) {
   this.name = name;
@@ -15,7 +16,6 @@ function Product(name, filepath) {
   this.id = this.name.replace(' ', '').toLowerCase();
   allProducts.push(this);
 }
-
 //Create products
 new Product('Bag', 'img/bag.jpg');
 new Product('Banana', 'img/banana.jpg');
@@ -37,40 +37,44 @@ new Product('Unicorn', 'img/unicorn.jpg');
 new Product('USB', 'img/usb.gif');
 new Product('Water Can', 'img/water-can.jpg');
 new Product('Wine Glass', 'img/wine-glass.jpg');
-
+//get a random number
 function getRandom() {
   return Math.floor(Math.random() * allProducts.length);
 }
 
+// get a new set of images from the previous one
+function getNewImages(usedImages) {
+  var newImages = [];
+
+  newImages[0] = getRandom();
+  while(usedImages.includes(newImages[0])) {
+    newImages[0] = getRandom();
+  }
+
+  newImages[1] = getRandom();
+  while(newImages[0] === newImages[1] || usedImages.includes(newImages[1])) {
+    newImages[1] = getRandom();
+  }
+   
+  newImages[2] = getRandom();
+  while(newImages[0] === newImages[2] || newImages[0] === newImages[1]
+     || newImages[1] === newImages[2] || usedImages.includes(newImages[2], usedImages)) {
+    newImages[2] = getRandom();
+  }
+  return newImages;
+}
 // Render 3 images to the user
 function displayImages(array) {
-  var currentlyShowing = [];
-  currentlyShowing[0] = getRandom();
-
-  while (usedImages.indexOf(currentlyShowing[0]) !== -1) {
-    console.error('Duplicate, or in prior view! Re run!');
-    currentlyShowing[0] = getRandom();
-  }
-  //make center image unique
-  currentlyShowing[1] = getRandom();
-  while(currentlyShowing[0] === currentlyShowing[1] || usedImages.indexOf(currentlyShowing[1]) !== -1) {
-    console.error('Duplicate at center, or in prior view! Re run!');
-    currentlyShowing[1] = getRandom();
-  }
-  //make right image unique
-  currentlyShowing[2] = getRandom();
-  while(currentlyShowing[0] === currentlyShowing[2] || currentlyShowing[1] === currentlyShowing[2] || usedImages.indexOf(currentlyShowing[2]) !== -1) {
-    console.error('Duplicate at 3rd one! Re run it!');
-    currentlyShowing[2] = getRandom();
-  }
-
+  var currentlyShowing = getNewImages(usedImages);
   var pageWrapper = document.getElementById('wrapper');
   for(var i = 0; i < 3; i++) {
     var productWrapper = document.createElement('div');
     var productNameContainer = document.createElement('div');
     var productImage = document.createElement('img');
     var productName = document.createElement('h4');
+    var productCardWrapper = document.createElement('div');
 
+    productCardWrapper.className = 'card-wrapper';
     productWrapper.className = 'card';
     productName.className = 'product-name';
     productName.textContent = allProducts[currentlyShowing[i]].name;
@@ -84,8 +88,10 @@ function displayImages(array) {
     productWrapper.appendChild(productImage);
     productNameContainer.appendChild(productName);
     productWrapper.appendChild(productNameContainer);
-    pageWrapper.appendChild(productWrapper);
+    productCardWrapper.appendChild(productWrapper);
+    pageWrapper.appendChild(productCardWrapper);
   }
+  usedImages = currentlyShowing;
 }
 displayImages(allProducts);
 
@@ -94,24 +100,25 @@ function getData() {
   for(var i = 0; i < allProducts.length; i++) {
     clickData.push(allProducts[i].numClicked);
     productNames.push(allProducts[i].name);
+    clickPercentage.push(parseInt(Math.floor((allProducts[i].numClicked / allProducts[i].numShown) * 100).toFixed(2)));
   }
 }
 
-//this holds the value for the votes of each product image
-var data = [12, 19, 3, 5, 2, 3];
-//this is the name for each product
-var labelColors = ['red', 'blue', 'yellow', 'green', 'purple', 'orange'];
-
+//draw chart to the window
 function drawChart() {
   var ctx = document.getElementById('barChart').getContext('2d');
-  var myChart = new Chart(ctx, {
+  var pie = document.getElementById('pieChart').getContext('2d');
+  var pieColors = ['green', 'blue', 'red', 'purple', 'lightBlue', 'salmon', 'aqua', 'olive', 'lime', 'teal', 'navy', 'fuschia',
+  'HotPink', 'Crimson', 'yellow', 'cadetBlue', 'SkyBlue', 'SandyBrown', 'DarkBlue', 'orange'];
+
+  var barChart = new Chart(ctx, {
     type: 'bar',
     data: {
       labels: productNames,
       datasets: [{
         label: '# of Clicks',
         data: clickData,
-        backgroundColor: 'blue'
+        backgroundColor: pieColors
       }]
     },
     options: {
@@ -124,13 +131,24 @@ function drawChart() {
       }
     }
   });
+  var pieChart = new Chart(pie, {
+    type: 'pie',
+    data: {
+      labels: productNames,
+      datasets: [{
+        label: '% of Clicks',
+        data: clickPercentage,
+        backgroundColor: pieColors
+      }]
+    }
+  });
 }
-
 //create click handler for images
 function handleImageClick(event) {
+  var element = document.getElementById('wrapper');
+
   if(event.target !== event.currentTarget) {
     var clickedProduct = event.target.id;
-    console.log(clickedProduct);
   }
   event.stopPropagation();
 
@@ -139,20 +157,23 @@ function handleImageClick(event) {
       allProducts[i].numClicked++;
     }
   }
-  var element = document.getElementById('wrapper');
+
   while (element.firstChild) {
     element.removeChild(element.firstChild);
   }
+
   displayImages(allProducts);
   selections++;
+
   if(selections === 25) {
     wrapper.removeEventListener('click', handleImageClick);
     wrapper.remove();
-    console.log(clickData);
     getData();
     drawChart();
+    var dataResults = JSON.stringify(allProducts);
+    localStorage.setItem('Data', dataResults);
   }
 }
-
+//add event linstener to the wrapper element
 var wrapper = document.getElementById('wrapper');
 wrapper.addEventListener('click', handleImageClick);
