@@ -4,6 +4,8 @@ var allProducts = [];
 var usedImages = [];
 var selections = 0;
 var pics = [];
+var clickData = [];
+var productNames = []
 //Create a constructor for the products
 function Product(name, filepath) {
   this.name = name;
@@ -35,16 +37,6 @@ new Product('Unicorn', 'img/unicorn.jpg');
 new Product('USB', 'img/usb.gif');
 new Product('Water Can', 'img/water-can.jpg');
 new Product('Wine Glass', 'img/wine-glass.jpg');
-
-//Display 3 randomly slelected products to the page
-function inArray(num, array) {
-  for(var i = 0; i <= array.length; i++) {
-    if(num === array[i]) {
-      return true;
-    }
-  }
-  return false;
-}
 
 function getRandom() {
   return Math.floor(Math.random() * allProducts.length);
@@ -96,24 +88,42 @@ function displayImages(array) {
   }
 }
 displayImages(allProducts);
+
 //Display results to the page as a list
-function displayResults() {
-  var pageWrapper = document.createElement('div');
-  var ulEl = document.createElement('ul');
-  var h2El = document.createElement('h2');
-
-  h2El.textContent = 'You\'re done! Here are the results!';
-  document.body.appendChild(pageWrapper);
-  pageWrapper.id = 'wrapper';
-
+function getData() {
   for(var i = 0; i < allProducts.length; i++) {
-    var liEl = document.createElement('li');
-    var message = allProducts[i].numClicked + ' votes for the ' + allProducts[i].name + '.';
-    liEl.textContent = message;
-    ulEl.appendChild(liEl);
+    clickData.push(allProducts[i].numClicked);
+    productNames.push(allProducts[i].name);
   }
-  pageWrapper.appendChild(h2El);
-  pageWrapper.appendChild(ulEl);
+}
+
+//this holds the value for the votes of each product image
+var data = [12, 19, 3, 5, 2, 3];
+//this is the name for each product
+var labelColors = ['red', 'blue', 'yellow', 'green', 'purple', 'orange'];
+
+function drawChart() {
+  var ctx = document.getElementById('barChart').getContext('2d');
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: productNames,
+      datasets: [{
+        label: '# of Clicks',
+        data: clickData,
+        backgroundColor: 'blue'
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
 }
 
 //create click handler for images
@@ -138,7 +148,9 @@ function handleImageClick(event) {
   if(selections === 25) {
     wrapper.removeEventListener('click', handleImageClick);
     wrapper.remove();
-    displayResults();
+    console.log(clickData);
+    getData();
+    drawChart();
   }
 }
 

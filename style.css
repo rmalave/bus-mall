@@ -41,3 +41,9 @@
     padding: 2px 16px;
     background-color: #f5f5f5;
 }
+
+/* chart style */
+.canvas-wrapper {
+  max-width: 80%;
+  margin: 15px auto;
+}
