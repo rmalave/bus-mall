@@ -2,6 +2,10 @@
   box-sizing: border-box;
 }
 
+header {
+  max-width: 600px;
+  margin: 60px auto;
+}
 .clearfix:after {
   display: block;
   content: "";
@@ -46,17 +50,26 @@
 
 /* chart style */
 .canvas-wrapper {
-  max-width: 90%;
+  max-width: 50%;
   margin: 15px auto;
 }
 
 canvas {
-  float: left;
-  max-width: 40%;
+  max-width: 100%;
 }
 
-@media screen and(max-width: 900px) {
-  canvas {
-    float: none !important;
+#resultsMessage {
+  font-size: 24px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .card-wrapper {
+    float: none;
+    margin: 0 auto;
+    width: 80%
+  }
+  .canvas-wrapper {
+    width: 100%;
   }
 }

@@ -94,7 +94,6 @@ function displayImages(array) {
   usedImages = currentlyShowing;
 }
 displayImages(allProducts);
-
 //Display results to the page as a list
 function getData() {
   for(var i = 0; i < allProducts.length; i++) {
@@ -103,7 +102,6 @@ function getData() {
     clickPercentage.push(parseInt(Math.floor((allProducts[i].numClicked / allProducts[i].numShown) * 100).toFixed(2)));
   }
 }
-
 //draw chart to the window
 function drawChart() {
   var ctx = document.getElementById('barChart').getContext('2d');
@@ -140,13 +138,30 @@ function drawChart() {
         data: clickPercentage,
         backgroundColor: pieColors
       }]
+    },
+    options: {
+      pieceLabel: {
+        // render 'label', 'value', 'percentage', 'image' or custom function, default is 'percentage'
+        render: 'value' + '%',
+        fontColor: '#fff',
+      }
     }
   });
+}
+
+function resultsMessage() {
+  var instructions = document.getElementById('instructions');
+  var resultsMessage = document.createElement('p');
+
+  resultsMessage.id = 'resultsMessage';
+  resultsMessage.textContent = 'Thanks for participating! Here are the results.';
+  instructions.remove();
+  document.getElementById('header').appendChild(resultsMessage);
 }
 //create click handler for images
 function handleImageClick(event) {
   var element = document.getElementById('wrapper');
-
+  
   if(event.target !== event.currentTarget) {
     var clickedProduct = event.target.id;
   }
@@ -170,6 +185,7 @@ function handleImageClick(event) {
     wrapper.remove();
     getData();
     drawChart();
+    resultsMessage();
     var dataResults = JSON.stringify(allProducts);
     localStorage.setItem('Data', dataResults);
   }

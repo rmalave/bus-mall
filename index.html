@@ -4,11 +4,17 @@
     <meta charset="utf-8">
     <title>Buss Mall Case Study</title>
     <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width" />
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js"></script>
+    <script type="text/javascript" src="Chart.PieceLabel.min.js"></script>
   </head>
   <body>
-
-    <h1 class="page-header">Buss Mall Case Study</h1>
+    <header id="header">
+      <h1 class="page-header">Buss Mall Case Study</h1>
+      <div id="instructions"><h2>Take a moment to help us find out which products you are most likely to buy from our catalog.</h2>
+      <p><strong>Instructions:</strong> A set of 3 images will be shown to you, pick the product you are most likely to buy. After 25 selections, 
+      you will see the results of your choices.</p></div>
+    </header>
     <div id="wrapper" class="clearfix"></div>
     <div class="canvas-wrapper">
       <canvas id="barChart" width="400" height="400"></canvas>
